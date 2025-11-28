@@ -27,13 +27,16 @@ go get github.com/luojiego/slogx
 ```go
 package main
 
-import "github.com/luojiego/slogx"
+import (
+    "fmt"
+    slogx "github.com/luojiego/slogx"
+)
 
 func main() {
     // Use package-level functions
     slogx.Info("Application started")
     slogx.Debug("Debug information")
-    slogx.Error("Error occurred", "error", err)
+    slogx.Error("Error occurred", "error", fmt.Errorf("321"))
 
     // Use With to add extra fields
     logger := slogx.With("module", "user-service")

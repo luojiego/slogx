@@ -293,7 +293,7 @@ func NewLogger(cfg Config) *Logger {
 	var handler slog.Handler
 	// 配置 slog Handler
 	handlerOptions := &slog.HandlerOptions{
-		AddSource: true, // 我们自己处理调用位置
+		AddSource: false,
 		Level:     level,
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
 			if a.Key == slog.TimeKey && a.Value.Kind() == slog.KindTime {
