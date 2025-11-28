@@ -2,6 +2,7 @@ package log
 
 import (
 	"io"
+	"log/slog"
 	"os"
 	"strings"
 	"testing"
@@ -10,7 +11,7 @@ import (
 func TestCallerLocation(t *testing.T) {
 	// 创建一个测试logger
 	testLogger := NewLogger(Config{
-		Level:    "debug",
+		Level:    slog.LevelDebug,
 		Format:   "text",
 		Filename: "", // 不写文件
 		Stdout:   true,
@@ -20,6 +21,8 @@ func TestCallerLocation(t *testing.T) {
 	oldStdout := os.Stdout
 	r, w, _ := os.Pipe()
 	os.Stdout = w
+
+	testLogger.Debug("test contains time filed", "time", 321)
 
 	// 测试完成后恢复标准输出
 	defer func() {
@@ -55,7 +58,7 @@ func TestCallerLocationInDifferentPackage(t *testing.T) {
 
 	// 配置logger写入临时文件
 	tmpLog := NewLogger(Config{
-		Level:    "debug",
+		Level:    slog.LevelDebug,
 		Format:   "text",
 		Filename: tmpDir + "/test.log",
 		Stdout:   false,

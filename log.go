@@ -23,6 +23,7 @@ const (
 	DefaultMaxSize    = 50  // 默认50MB
 	DefaultMaxBackups = 100 // 默认保留100个备份
 	DefaultMaxAge     = 30  // 默认保留30天
+	DefaultLevel      = "debug"
 )
 
 // getLogFileName 获取日志文件名，去除可能的.exe后缀
@@ -59,6 +60,7 @@ func init() {
 	maxSize := getEnvOrDefault("LOG_MAX_SIZE", DefaultMaxSize)
 	maxBackups := getEnvOrDefault("LOG_MAX_BACKUPS", DefaultMaxBackups)
 	maxAge := getEnvOrDefault("LOG_MAX_AGE", DefaultMaxAge)
+	logLevel := getEnvOrDefault("LOG_LEVEL", int(slog.LevelDebug))
 
 	// 根据环境设置压缩和标准输出
 	isProd := isProduction()
@@ -67,7 +69,7 @@ func init() {
 
 	// 使用默认配置初始化全局logger
 	defaultLogger = NewLogger(Config{
-		Level:      "debug",
+		Level:      slog.Level(logLevel),
 		Format:     "text",
 		Filename:   filepath.Join("logs", getLogFileName()),
 		MaxSize:    maxSize,
@@ -116,14 +118,14 @@ func GetDefaultLogger() *Logger {
 
 // Config 定义日志库的配置
 type Config struct {
-	Level      string // 日志级别: debug, info, warn, error
-	Format     string // 输出格式: json, text
-	Filename   string // 日志文件路径
-	MaxSize    int    // 每个日志文件的最大兆字节数 (MB)
-	MaxBackups int    // 保留的旧日志文件的最大数量
-	MaxAge     int    // 保留旧日志文件的最大天数
-	Compress   bool   // 是否压缩旧日志文件
-	Stdout     bool   // 是否同时输出到标准输出
+	Level      slog.Level // 日志级别: debug, info, warn, error
+	Format     string     // 输出格式: json, text
+	Filename   string     // 日志文件路径
+	MaxSize    int        // 每个日志文件的最大兆字节数 (MB)
+	MaxBackups int        // 保留的旧日志文件的最大数量
+	MaxAge     int        // 保留旧日志文件的最大天数
+	Compress   bool       // 是否压缩旧日志文件
+	Stdout     bool       // 是否同时输出到标准输出
 }
 
 // Logger 是我们封装的日志器
@@ -286,26 +288,15 @@ func NewLogger(cfg Config) *Logger {
 
 	// 设置日志级别
 	level := &slog.LevelVar{}
-	switch cfg.Level {
-	case "debug":
-		level.Set(slog.LevelDebug)
-	case "info":
-		level.Set(slog.LevelInfo)
-	case "warn":
-		level.Set(slog.LevelWarn)
-	case "error":
-		level.Set(slog.LevelError)
-	default:
-		level.Set(slog.LevelInfo) // 默认级别
-	}
+	level.Set(cfg.Level)
 
 	var handler slog.Handler
 	// 配置 slog Handler
 	handlerOptions := &slog.HandlerOptions{
-		AddSource: false, // 我们自己处理调用位置
+		AddSource: true, // 我们自己处理调用位置
 		Level:     level,
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
-			if a.Key == slog.TimeKey {
+			if a.Key == slog.TimeKey && a.Value.Kind() == slog.KindTime {
 				return slog.Attr{
 					Key:   "time",
 					Value: slog.StringValue(a.Value.Time().Format("2006-01-02 15:04:05.000000")),
