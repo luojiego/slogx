@@ -52,7 +52,7 @@ func isProduction() bool {
 
 func init() {
 	// 确保logs目录存在
-	if err := os.MkdirAll("logs", 0755); err != nil {
+	if err := os.MkdirAll("logs", 0o755); err != nil {
 		panic("failed to create logs directory: " + err.Error())
 	}
 
@@ -80,7 +80,7 @@ func init() {
 	})
 }
 
-// 提供包级别的日志函数
+// Debug 提供包级别的日志函数
 func Debug(msg string, args ...any) {
 	defaultLogger.Debug(msg, args...)
 }
@@ -114,6 +114,16 @@ func SetDefaultLogger(l *Logger) {
 // GetDefaultLogger returns the current default logger
 func GetDefaultLogger() *Logger {
 	return defaultLogger
+}
+
+// GetLevel returns the current log level of the default logger.
+func GetLevel() slog.Level {
+	return defaultLogger.GetLevel()
+}
+
+// SetLevel sets the log level of the default logger at runtime.
+func SetLevel(level slog.Level) {
+	defaultLogger.SetLevel(level)
 }
 
 // Config 定义日志库的配置
@@ -209,6 +219,16 @@ func (l *Logger) WithCallerSkip(skip int, args ...any) *Logger {
 		level:   l.level,
 	}
 	return newLogger
+}
+
+// GetLevel returns the current log level of the logger.
+func (l *Logger) GetLevel() slog.Level {
+	return l.level.Level()
+}
+
+// SetLevel sets the log level of the logger at runtime.
+func (l *Logger) SetLevel(level slog.Level) {
+	l.level.Set(level)
 }
 
 // wrappedHandler 包装原有的 handler，添加文件行号
