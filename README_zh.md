@@ -19,7 +19,7 @@ Slogx 是一个基于 Go 1.21+ 内置的 `slog` 包封装的结构化日志库�
 ## 安装
 
 ```bash
-go get github.com/luojiego/slogx
+go get github.com/luojiedev/slogx
 ```
 
 ## 快速开始
@@ -27,7 +27,7 @@ go get github.com/luojiego/slogx
 ```go
 package main
 
-import "github.com/luojiego/slogx"
+import "github.com/luojiedev/slogx"
 
 func main() {
     // 直接使用包级别的函数
@@ -128,4 +128,4 @@ MIT License
 
 ## 作者
 
-[luojiego](https://github.com/luojiego) 
+[luojiedev](https://github.com/luojiedev) 

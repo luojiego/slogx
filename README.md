@@ -19,7 +19,7 @@ A structured logging library for Go, built on top of `slog` with automatic log r
 ## Installation
 
 ```bash
-go get github.com/luojiego/slogx
+go get github.com/luojiedev/slogx
 ```
 
 ## Quick Start
@@ -29,7 +29,7 @@ package main
 
 import (
     "fmt"
-    slogx "github.com/luojiego/slogx"
+    slogx "github.com/luojiedev/slogx"
 )
 
 func main() {
@@ -131,4 +131,4 @@ Issues and Pull Requests are welcome!
 
 ## Author
 
-[luojiego](https://github.com/luojiego)
+[luojiedev](https://github.com/luojiedev)

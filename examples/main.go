@@ -3,7 +3,7 @@ package main
 import (
 	"log/slog"
 
-	log "github.com/luojiego/slogx"
+	log "github.com/luojiedev/slogx"
 )
 
 func logSomething() {
